@@ -129,15 +129,23 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
     _growingWaveController
       ..forward()
       ..addListener(_updateGrowAnimationProgress);
+
+    widget.playerController.positionChanged.listen((event) {
+      _seekProgress.value = event;
+      _updatePlayerPercent(widget.size);
+    });
+
     onCurrentDurationSubscription =
         widget.playerController.onCurrentDurationChanged.listen((event) {
-      _seekProgress.value = event;
+      _seekProgress.value = event; // okay, we need this value updated on seek
+      print("onCurrentDurationChanged");
       _updatePlayerPercent(widget.size);
     });
 
     onCompletionSubscription =
         widget.playerController.onCompletion.listen((event) {
       _seekProgress.value = widget.playerController.maxDuration;
+      print("onCompletion");
       _updatePlayerPercent(widget.size);
     });
     if (widget.waveformData.isNotEmpty) {
@@ -256,11 +264,20 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
     scrollScale = 1.0;
     if (mounted) setState(() {});
 
+    _updateProgress();
+
+    // _updatePlayerPercent(widget.size);
+    print("_handle_nDragEnd: $_audioProgress");
+  }
+
+  void _updateProgress() {
     if (widget.waveformType.isLong) {
-      widget.playerController.seekTo(
-        (widget.playerController.maxDuration * _proportion).toInt(),
-      );
+      var time = (widget.playerController.maxDuration * _proportion).toInt();
+      widget.playerController.seekTo(time);
+      _seekProgress.value = time;
     }
+
+    _updatePlayerPercent(widget.size);
   }
 
   void _addWaveformData(List<double> data) {
@@ -302,7 +319,7 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
     // Direction of the scroll. Negative value indicates scroll left to right
     // and positive value indicates scroll right to left
     _scrollDirection = details.localPosition.dx - _initialDragPosition;
-    widget.playerController.setRefresh(false);
+    // widget.playerController.setRefresh(false);
     _isScrolled = true;
 
     scrollScale = widget.playerWaveStyle.scrollScale;
@@ -340,6 +357,14 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
           (_waveformData.length * widget.playerWaveStyle.spacing);
     }
     if (mounted) setState(() {});
+
+    // if (widget.waveformType.isLong) {
+    //   widget.playerController.seekTo(
+    //     (widget.playerController.maxDuration * _proportion).toInt(),
+    //   );
+    // }
+
+    _updateProgress();
   }
 
   ///This will help-out to determine direction of the scroll
@@ -366,7 +391,9 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
   /// calculates seek progress
   void _updatePlayerPercent(Size size) {
     if (widget.playerController.maxDuration == 0) return;
+
     _audioProgress = _seekProgress.value / widget.playerController.maxDuration;
+    print("_updatePlayerPercent: $_audioProgress");
   }
 
   ///This will handle pushing back the wave when it reaches to middle/end of the

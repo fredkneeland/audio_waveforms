@@ -76,6 +76,10 @@ class PlayerController extends ChangeNotifier {
   Stream<void> get onCompletion =>
       PlatformStreams.instance.onCompletion.filter(playerKey);
 
+  final StreamController<int> _positionChanged =
+      StreamController<int>.broadcast();
+  Stream<int> get positionChanged => _positionChanged.stream;
+
   PlayerController() {
     if (!PlatformStreams.instance.isInitialised) {
       PlatformStreams.instance.init();
@@ -251,6 +255,8 @@ class PlayerController extends ChangeNotifier {
   Future<void> seekTo(int progress) async {
     if (progress < 0) return;
     await AudioWaveformsInterface.instance.seekTo(playerKey, progress);
+    _positionChanged.add(progress);
+    notifyListeners();
   }
 
   /// Release any resources taken by this controller. Disposing this
