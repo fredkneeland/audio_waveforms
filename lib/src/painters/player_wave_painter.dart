@@ -93,10 +93,8 @@ class PlayerWavePainter extends CustomPainter {
   void _drawWave(Size size, Canvas canvas) {
     final length = waveformData.length;
     if (cachedAudioProgress != audioProgress) {
-      print("pushback");
       pushBack();
     }
-    print("_drawWave: $audioProgress");
     for (int i = 0; i < length; i++) {
       canvas.drawLine(
         Offset(

@@ -138,14 +138,12 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
     onCurrentDurationSubscription =
         widget.playerController.onCurrentDurationChanged.listen((event) {
       _seekProgress.value = event; // okay, we need this value updated on seek
-      print("onCurrentDurationChanged");
       _updatePlayerPercent(widget.size);
     });
 
     onCompletionSubscription =
         widget.playerController.onCompletion.listen((event) {
       _seekProgress.value = widget.playerController.maxDuration;
-      print("onCompletion");
       _updatePlayerPercent(widget.size);
     });
     if (widget.waveformData.isNotEmpty) {
@@ -267,7 +265,6 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
     _updateProgress();
 
     // _updatePlayerPercent(widget.size);
-    print("_handle_nDragEnd: $_audioProgress");
   }
 
   void _updateProgress() {
@@ -393,7 +390,6 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
     if (widget.playerController.maxDuration == 0) return;
 
     _audioProgress = _seekProgress.value / widget.playerController.maxDuration;
-    print("_updatePlayerPercent: $_audioProgress");
   }
 
   ///This will handle pushing back the wave when it reaches to middle/end of the

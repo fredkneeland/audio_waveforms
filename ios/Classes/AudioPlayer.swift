@@ -116,14 +116,7 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     func startListening() {
-        print("startListening")
         if #available(iOS 10.0, *) {
-            // update here maybe??
-            // timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: { _ in
-            //     let ms = (self.player?.currentTime ?? 0) * 1000
-            //     self.flutterChannel.invokeMethod(Constants.onCurrentDuration, arguments: [Constants.current: Int(ms), Constants.playerKey: self.playerKey])
-            // })
-
             let timer = CADisplayLink(target: self, selector: #selector(update))
             timer.add(to: .main, forMode: .common)
             self.timer = timer
@@ -133,7 +126,6 @@ class AudioPlayer: NSObject, AVAudioPlayerDelegate {
     }
 
     @objc func update(_ displayLink: CADisplayLink) {
-        print("update")
         let ms = (self.player?.currentTime ?? 0) * 1000
         self.flutterChannel.invokeMethod(Constants.onCurrentDuration, arguments: [Constants.current: Int(ms), Constants.playerKey: self.playerKey])
     }
