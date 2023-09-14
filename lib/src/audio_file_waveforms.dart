@@ -263,8 +263,6 @@ class _AudioFileWaveformsState extends State<AudioFileWaveforms>
     if (mounted) setState(() {});
 
     _updateProgress();
-
-    // _updatePlayerPercent(widget.size);
   }
 
   void _updateProgress() {

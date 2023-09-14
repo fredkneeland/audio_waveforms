@@ -95,6 +95,7 @@ class PlayerWavePainter extends CustomPainter {
     if (cachedAudioProgress != audioProgress) {
       pushBack();
     }
+
     for (int i = 0; i < length; i++) {
       canvas.drawLine(
         Offset(
